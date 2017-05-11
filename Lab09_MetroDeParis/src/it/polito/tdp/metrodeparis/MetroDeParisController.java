@@ -46,8 +46,12 @@ public class MetroDeParisController {
     	Fermata arrivo = cmbArrivo.getValue() ;
     	if(partenza!= null && arrivo!=null){
     		List<Fermata> result = model.calcolaCamminoMinimo(partenza, arrivo) ;
-    		txtResult.appendText("Percorso:"+result.toString());
-    		txtResult.appendText("Tempo percorso in minuti:" +(model.getDurata()/60));
+    		txtResult.clear() ;
+    		for(Fermata r : result){
+    			txtResult.appendText(r.toString()+"\n");
+    		}
+    		
+    		txtResult.appendText("\n Tempo percorso in minuti:" +(Math.round(model.getDurata()/60)));
     	}
     	else{
     		txtResult.setText("Errore");

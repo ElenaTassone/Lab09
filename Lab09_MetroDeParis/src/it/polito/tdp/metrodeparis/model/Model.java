@@ -3,8 +3,10 @@ package it.polito.tdp.metrodeparis.model;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.UndirectedGraph;
@@ -71,12 +73,23 @@ public class Model {
 		DijkstraShortestPath<Fermata, Connessione> dsp = new DijkstraShortestPath<Fermata, Connessione> (grafo, partenza, arrivo) ; 
 		List <Connessione> edges= new ArrayList<Connessione> (dsp.findPathBetween(grafo, partenza, arrivo)) ;
 		
-		map = new HashMap<Fermata, Fermata> () ;
-		map.put(edges.get(0).getPartenza(),edges.get(0).getPartenza()) ;
-		for(Connessione c : edges){
-			map.put(c.getPartenza(), c.getArrivo());
+		map = new LinkedHashMap<Fermata, Fermata> () ;
+		map.put(null, partenza) ;
+		
+		for(int i = 0 ; i < edges.size() ; i ++){
+			boolean aggiunto = false ;
+			Connessione c = edges.get(i) ;
+			if(map.containsValue(c.getPartenza()) && aggiunto == false){
+				map.put(c.getPartenza(), c.getArrivo());
+				aggiunto = true ;
+				}
+			if(map.containsValue(c.getArrivo()) && aggiunto == false){
+				map.put(c.getArrivo(), c.getPartenza()) ;
+				aggiunto = true ;
+				}
 		}
 		List<Fermata> lista = new ArrayList<Fermata> (map.values());
+		
 		durata = (dsp.getPathLength() + 30*lista.size());
 		return lista ;
 	}
